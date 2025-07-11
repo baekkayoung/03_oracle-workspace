@@ -67,6 +67,9 @@ WHERE HIRE_DATE BETWEEN '900101' AND '001201' AND SALARY >= 2700000
     AND EMAIL LIKE '____$_%' ESCAPE '$' AND DEPT_CODE IN ('D9','D6');
 
 -- 15. EMPLOYEE테이블에서 사원 명과 직원의 주민번호를 이용하여 생년, 생월, 생일 조회 
+SELECT 
+FROM
+WHERE 
 
 -- 16. EMPLOYEE테이블에서 사원명, 주민번호 조회 (단, 주민번호는 생년월일만 보이게 하고, '-'다음 값은 '*'로 바꾸기) 
 SELECT EMP_NAME, SUBSTR(EMP_NO,1,8) || '******'
@@ -81,7 +84,8 @@ FROM EMPLOYEE ;
 -- 19. EMPLOYEE테이블에서 근무 년수가 20년 이상인 직원 정보 조회 
 SELECT *
 FROM EMPLOYEE
-WHERE EXTRACT (YEAR FROM SYSDATE)-(YEAR FROM HIRE_DATE )>20;
+CEIL (SYSDATE - HIRE_DATE) > 20;
+
 -- 20. EMPLOYEE 테이블에서 사원명, 급여 조회 (단, 급여는 '\9,000,000' 형식으로 표시) 
 -- 21. EMPLOYEE테이블에서 직원 명, 부서코드, 생년월일, 나이(만) 조회 
 -- (단, 생년월일은 주민번호에서 추출해서 00년 00월 00일로 출력되게 하며  

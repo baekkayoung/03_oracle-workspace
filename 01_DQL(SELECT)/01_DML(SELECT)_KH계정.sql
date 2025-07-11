@@ -336,3 +336,149 @@ SELECT DEPT_ID, DEPT_TITLE
 FROM DEPARTMENT
 WHERE DEPT_ID = 'D5' OR DEPT_ID = 'D6' OR DEPT_ID ='D7';
 --WHERE DEPT_TITLE LIKE '해외영업%'
+
+--------------------------------------------------------------------------------
+
+/*
+    < IS NULL / IS NOT NULL >
+    컬럼값에 NULL이 있을 경우 NULL 값 비교에 사용되는 연산자
+*/
+
+-- 보너스를 받지 않는 사원(BOUNUS 값이 NULL)들의 사번, 이름, 급여, 보너스 조회
+SELECT EMP_ID, EMP_NAME, SALARY, BONUS
+FROM EMPLOYEE
+--WHERE BONUS = NULL; 정상적으로 조회 안됨
+WHERE BONUS IS NULL; 
+
+-- 보너스를 받는 사원(BONUS 값이 NULL이 아닌)들의 사번, 이름, 급여, 보너스 조회
+SELECT EMP_ID, EMP_NAME, SALARY, BONUS
+FROM EMPLOYEE
+--WHERE BONUS != NULL;
+WHERE BONUS IS NOT NULL;
+-- NOT은 컬럼명 앞 또는 IS 뒤에서 사용 가능
+
+-- 사수가 없는 사원(MANAGE_ID 값이 NULL)들의 사원명, 사수사번, 부서코드 조회
+SELECT EMP_NAME, MANAGER_ID, DEPT_CODE
+FROM EMPLOYEE
+WHERE MANAGER_ID IS NULL;
+
+-- 부서배치를 아직 받지는 않았지만 보너스는 받는 사원들의 이름, 보넛, 부서코드 조회
+SELECT EMP_NAME, BONUS, DEPT_CODE
+FROM EMPLOYEE
+WHERE DEPT_CODE IS NULL AND BONUS IS NOT NULL;
+
+--------------------------------------------------------------------------------
+/*
+    <IN>
+    비교대상 컬럼값이 내가 제시한 목록중에 일치하는 값이 있는지
+    
+    [표현법]
+    비교대상컬럼 IN('값1', '값2', ...)
+
+*/
+-- 부서코드가 D6 이거나 D8이거나 D6인 부서원들의 이름, 부서코드, 급여 조회
+SELECT EMP_NAME, DEPT_CODE, SALARY
+FROM EMPLOYEE
+--WHERE DEPT_CODE = 'D6' OR DEPT_ CODE = 'DB OR DEPT_CODE = 'D5';
+WHERE DEPT_CODE IN ('D6','D8','D5');
+
+-- 그 외의 사원들
+SELECT EMP_NAME, DEPTE_CODE, SALARY
+FROM EMPLOYEE
+WHERE DEPT_CODE NOT IN ('D6','D8','D5');
+
+--------------------------------------------------------------------------------
+
+/*
+    < 연산자 우선순위>
+    0.()
+    1.산술연산자
+    2.연결연산자
+    3.비교연산자
+    4.IS NULL / LIKE '특정패턴' / IN
+    5. BETWEEN A AND B
+    6. NOT(논리연산자)
+    7. AND(논리연산자)
+    8. OR(논리연산자)
+    
+*/
+
+-- ** OR 보다 AND가 먼저 연산됨
+-- 직급코드가 J7 이거나 J2인 사원들중 급여가 200 만원 이상인 사람들의 모든 컬럼교회
+SELECT *
+FROM EMPLOYEE
+WHERE (JOB_CODE = 'J7' OR  JOB_CODE = 'J2') AND SALARY >= 2000000;
+
+--------------------------------실습문제------------------------------
+
+--1. 사수가 없고 부서배치도 받지 않은 사원들의 (사원명, 사수사번, 부서코드 조회)
+SELECT EMP_NAME, MANAGER_ID, DEPT_CODE
+FROM EMPLOYEE
+WHERE MANAGER_ID IS NULL AND DEPT_CODE IS NULL;
+
+--2. 연봉(보너스미포함)이 3000만원 이상이고 보너스를 받지 않는 사람들의 사번, 사원명, 급여, 보너스) 조회
+SELECT EMP_NO, EMP_NAME, SALARY, BONUS
+FROM EMPLOYEE
+WHERE SALARY*12 >= 30000000 AND BONUS IS NULL;
+
+--3. 입사일이 '95/01/01' 이상이고 부서배치를 받은 사람들의 (사번, 사원명, 입사일 , 부서코드} 조회)
+SELECT EMP_NO, EMP_NAME, HIRE_DATE, DEPT_CODE
+FROM EMPLOYEE
+WHERE HIRE_DATE >= '95/01/01' AND DEPT_CODE IS NOT NULL;
+
+--4. 급여가 200만원 이상 500만원 이하이고 입사일이 '01/01/01' 이상이고 보너스를 받지 않는 사원들의 (사번, 사원명, 급여, 입사일, 보너스) 조회
+SELECT EMP_ID, EMP_NAME, SALARY, HIRE_DATE, BONUS
+FROM EMPLOYEE
+WHERE SALARY BETWEEN 2000000 AND 5000000 AND HIRE_DATE >= '01/01/01' AND BONUS IS NULL;
+
+--5. 보너스 포함 연봉이 NULL이 아니고 이름이 '하'가 포함되어 있는 사원들의 (사번, 사원명, 급여, 보너스포함연봉) 조회(별칭부여)
+SELECT EMP_ID AS "사번" , EMP_NAME AS "사원명", SALARY AS "급여",  (SALARY + SALARY * BONUS)*12 AS "보너스 포함 연봉"
+FROM EMPLOYEE
+WHERE BONUS IS NOT NULL AND EMP_NAME LIKE '%하%';
+
+SELECT EMP_ID, EMP_NAME, SALARY
+FROM EMPLOYEE
+WHERE DEPT_CODE IS NULL;
+
+--------------------------------------------------------------------------------
+
+/*
+    < ORDER BY 절 > 
+    가장 마지막 줄에 작성하고 뿐만 아니라 실행순서 또한 마지막에 실행(그래서 별칭 인식 가능)
+    
+    [표현법]
+    SELECT 조회할 컬럼, 컬럼, 산술연산식 AS "별칭" ...
+    FROM 조회하고자하는 테이블명
+    WHRER 조건식
+    OODER BY 정렬하고싶은컬럼|별칭|컬럼순번 [ASC|DESC] [NULLS FIRST|NULLS LAST]
+    
+    - ASC : 오름차순 정렬(생략시 기본값)
+    - DESC : 내림차순 정렬
+    
+    - NULLS FIRTST : 정렬하고자 하는 값에 NULL이 있을 경우 해당 데이터를 먼저 배치 (생략시 DESC일때의 기본값)
+    - NULLS LAST : 정렬하고자 하는 값에 NULL이 있을 경우 해당 데이터를 맨 뒤 배치 (생략시 ASC일때의 기본값)
+*/
+
+SELECT *
+FROM EMPLOYEE
+--ORDER BY BONUS;
+--ORDER BY BONUS ASC; 오름차순 정렬일때 기본적으로 NULLS LAST구나!
+--ORDER BY BONUS ASC NULLS FIRST; 오름차순인데 NULL이 먼저
+--ORDER BY BONUS DESC; -- 내림차순 정렬일 때는 기본적으로 NULLS FIRST 구나!
+ORDER BY BONUS DESC, SALARY ASC; -- 정렬 기준 여러개 제시 가능(첫번째 기준의 컬럼값이 동일할 경우 두번쨰 기준 컬럼가지고 정렬)
+
+-- 전체 사원의 사원명, 연봉 조회 (이때 연봉별 내림차순 정렬조회)
+SELECT EMP_NAME, SALARY*12 AS "연봉"
+FROM EMPLOYEE
+--ORDER BY SALARY*12 DESC;
+--ORDER BY 연봉 DESC; -- 실행순서에따라 별칭을 사용할 수 있다
+ORDER BY 2 DESC; -- 컬럼의 순번 사용 가능 (컬럼 개수보다 큰 숫자 안됨)
+
+
+
+
+
+
+
+
+

@@ -307,3 +307,115 @@ FROM EMPLOYEE
 WHERE (DEPT_CODE, SALARY) IN (SELECT DEPT_CODE, MAX(SALARY) -- D9
                               FROM EMPLOYEE
                               GROUP BY DEPT_CODE);
+
+/*
+    5. 인라인 뷰 (INLINE-VIEW)
+    
+    서브쿼리를 수행한 결과를 마치 테이블처럼 사용!
+*/
+-- 사원들의 사번, 이름, 보너스포함연봉(별칭부여: 연봉), 부서코드 조회 => 보너스포함 연봉이 절대 NULL이 나오지 않도록!
+-- 단, BONUS 연봉이 3000만원 이상인 사원들만 조회
+
+SELECT EMP_ID, EMP_NAME, (SALARY + SALARY * NVL(BONUS, 0))*12 AS "연봉", DEPT_CODE
+FROM EMPLOYEE
+WHERE (SALARY + SALARY * NVL(BONUS, 0))*12 >=30000000; -- WHERE 절에 별칭 바로 사용 못 함
+
+SELECT EMP_ID, EMP_NAME, (SALARY + SALARY * NVL(BONUS, 0))*12 AS "연봉", DEPT_CODE
+FROM EMPLOYEE;
+-- 이걸 마치 존재하는 테이블인거마냥 사용할 수 있음! 그게 바로 인라인뷰!
+
+SELECT EMP_ID, EMP_NAME --, MANAGER_ID: 인라인 뷰에 없는 컬럼 제시하면 오류남!
+FROM (SELECT EMP_ID, EMP_NAME, (SALARY + SALARY * NVL(BONUS, 0))*12 AS "연봉", DEPT_CODE
+      FROM EMPLOYEE)
+WHERE 연봉 >= 30000000;
+
+-->> 인라인뷰를 주로 사용하는 예 => TOP-N 분석(상위 몇 개만 보여주고 싶을 때 => BEST 상품, BEST 게시글...)
+
+--> 전 직원 중 급여가 가장 높은 상위 5명만 조회
+-- *ROWNUM : 오라클에서 제공해주는 컬럼, 조회된 순서대로 1번부터 순번을 부여해주는 컬럼
+SELECT ROWNUM, EMP_NAME, SALARY --2 (이때 순서가 이미 부여됨. 정렬도 하기전에 이미 순서 부여)
+FROM EMPLOYEE --1
+WHERE ROWNUM <=5
+ORDER BY SALARY DESC; --3
+-- 정상적인 결과가 조회되지 않는다는 문제
+
+-- ORDER BY절이 다 수행된 결과를 가지고 그때서야 ROWNUM을 부여 후 5명 추려야함!
+SELECT ROWNUM, EMP_NAME, SALARY
+FROM (SELECT EMP_NAME,SALARY,DEPT_CODE
+      FROM EMPLOYEE
+      ORDER BY SALARY DESC)
+WHERE ROWNUM <=5;
+
+-- ROWNUM이랑 전체컬럼 조회하고 싶음... => 별칭 부여하는 방식으로!
+SELECT ROWNUM, E.*
+FROM (SELECT EMP_NAME,SALARY,DEPT_CODE
+      FROM EMPLOYEE
+      ORDER BY SALARY DESC) E
+WHERE ROWNUM <=5;
+
+
+-- 가장 최근에 입사한 사원 5명 조회(사원명, 급여, 입사일)
+SELECT EMP_NAME, SALARY, HIRE_DATE
+FROM EMPLOYEE;
+
+SELECT *
+FROM EMPLOYEE
+ORDER BY HIRE_DATE DESC;
+
+SELECT ROWNUM,EMP_NAME, SALARY, HIRE_DATE
+FROM (SELECT EMP_NAME, SALARY, HIRE_DATE
+        FROM EMPLOYEE
+        ORDER BY HIRE_DATE DESC)
+WHERE ROWNUM <=5;
+
+SELECT ROWNUM, EMP_NAME, SALARY, HIRE_DATE
+FROM(SELECT *
+    FROM EMPLOYEE
+    ORDER BY HIRE_DATE DESC)
+WHERE ROWNUM <=5;
+
+-- 각 부서별 평균 급여가 높은 3개의 부서를 조회(부서코드, 평균급여)
+SELECT DEPT_CODE, AVG(SALARY)
+FROM EMPLOYEE
+GROUP BY DEPT_CODE
+ORDER BY 2 DESC;
+
+SELECT ROWNUM, DEPT_CODE, FLOOR(평균급여)
+FROM (SELECT DEPT_CODE, AVG(SALARY) AS "평균급여"
+        FROM EMPLOYEE
+        GROUP BY DEPT_CODE
+        ORDER BY 2 DESC)
+WHERE ROWNUM <=3;
+
+--------------------------------------------------------------------------------
+/*
+    *순위 매기는 함수 (WINDOW FUNCTION)
+    - RANK() OVER(정렬기준) : 동일한 순위 이후 등수를 동일한 인원수 만큼 건너 뛰고 순위 계산
+                        EX) 공동 1위 2명이면 그 다음 순위는 3위
+                        
+     
+    - DENSE_RANK() OVER(정렬기준) : 동일한 순위가 있다고 해도 그 다음 등수를 무조건 1씩 증가시킴
+                        EX) 공동 1위가 2명이더라도 그 다음 순위를 2위
+     
+     >> 두 함수는 무조건 SELECT에서만 사용 가능하다
+*/
+
+-- 급여가 높은 순대로 순위를 매겨서 조회
+SELECT EMP_NAME, SALARY, RANK() OVER(ORDER BY SALARY DESC) AS "순위" 
+FROM EMPLOYEE;
+-- 공동 19위 2명 그 뒤의 순위는 21 => 마지막 순위랑 조회된 행수가 같음
+
+SELECT EMP_NAME, SALARY, DENSE_RANK() OVER(ORDER BY SALARY DESC) AS "순위" 
+FROM EMPLOYEE;
+-- 공동 19위가 2명 그 뒤의 순위는 20 -> 마지막 순위랑 조회된 행수가 다름
+
+SELECT EMP_NAME, SALARY, RANK() OVER(ORDER BY SALARY DESC) AS "순위" 
+FROM EMPLOYEE;
+-- WHERE RANK() OVER(ORDER BY SALARY DESC) <=5; -- window functions are not allowed here
+-- WHERE 순위 <=5;
+
+-- 인라인 뷰를 쓸 수밖에 없음!
+SELECT *
+FROM (SELECT EMP_NAME, SALARY, RANK() OVER(ORDER BY SALARY DESC) AS "순위" 
+        FROM EMPLOYEE)
+WHERE 순위 <=5;

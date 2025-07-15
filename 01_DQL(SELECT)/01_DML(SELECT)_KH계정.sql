@@ -203,7 +203,8 @@ WHERE SALARY >= 3000000;
 --2. 연봉이 5000만원 이상인 사원들의 사원명, 급여, 연봉, 부서코드 조회
 SELECT EMP_NAME, SALARY, SALARY*12 AS "연봉", DEPT_CODE -- 3번
 FROM EMPLOYEE -- 1번
-WHERE SALARY*12>=50000000;
+WHERE SALARY*12>=50000000; -2 
+
 -- WHERE 연봉 >= 50000000; 2번 (invalid identifier)옵티마이저의 실행 계획에 따라..
 -- WHERE 절에서는 SELECT절에서 작성한 별칭 사용 불가!
 -- 쿼리 실행 순서

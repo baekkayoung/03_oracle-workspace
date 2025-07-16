@@ -252,7 +252,7 @@ FROM EMPLOYEE;
 -- *NEXT_DAT(DATE,요일) : 해당 날짜 이후에 가장 가까운 요일의 반환해주는 함수
 --SELECT SYSDATE, NEXT_DAY(SYSDATE, '화요일' /*'화'*/) FROM DUAL;
 --SELECT SYSDATE, NEXT_DAY(SYSDATE, '화') FROM DUAL;
-SELECT SYSDATE, NEXT_DAY(SYSDATE, '3') FROM DUAL;
+SELECT SYSDATE, NEXT_DAY(SYSDATE, 3) FROM DUAL;
 -- 1 : 일요일 2 : 월요일 3 : 화요일,... 7 : 토요일
 
 
@@ -278,7 +278,7 @@ EXTRACT (YEAR FROM HIRE_DATE) AS "입사년도",
 EXTRACT (MONTH FROM HIRE_DATE) AS "입사월",
 EXTRACT (DAY FROM HIRE_DATE) AS "입사일"
 FROM EMPLOYEE
-ORDER BY "입사년도", "입사월", "입사일";
+ORDER BY "입사년도", "입사월", "입사일"; -- 첫번째 컬럼의 값이 같을 경우 두번째 컬럼 값 기준으로 정렬
 
 --------------------------------------------------------------------------------
 
@@ -287,7 +287,7 @@ ORDER BY "입사년도", "입사월", "입사일";
     
     * TO_ CHAR : 숫자 타입이나 날짜 타입의 값을 문자타입으로 변환 시켜주는 함수
     
-    TO_CHAR(숫자|날짜, [포맷])
+      TO_CHAR(숫자|날짜, [포맷])
 */
 
 -- 숫자타입 => 문자타입
@@ -431,7 +431,7 @@ SELECT NULLIF('123','456')FROM DUAL;
 */
 
 -- 사번, 사원명, 주민번호
-SELECT EMP_ID, EMP_NAME, EMP_NO, SUBSTR(EMP_NO,8,1)
+SELECT EMP_ID, EMP_NAME, EMP_NO, SUBSTR(EMP_NO,8,1),
 DECODE(SUBSTR(EMP_NO,8,1),'1','남','2','여') AS "성별"
 FROM EMPLOYEE;
 
@@ -444,9 +444,8 @@ FROM EMPLOYEE;
 -- 사원명, 직급코드, 기존급여, 인상된급여
 SELECT EMP_NAME, JOB_CODE, SALARY,
      DECODE(JOB_CODE,'J7',SALARY*1.1,
-     
-                    'J6', SALARY *1.15
-                    'J5', SALARY *1.2
+                    'J6', SALARY *1.15,
+                    'J5', SALARY *1.2,
                     SALARY * 1.05) AS "인상된 급여"
 FROM EMPLOYEE;
 
@@ -462,8 +461,8 @@ FROM EMPLOYEE;
 */
 
 SELECT EMP_NAME, SALARY,
-CASE WHEN SALARY >= 500000 THEN '고급 개발자'
-     WHEN SALARY >= 350000 THEN '중급 개발자'
+CASE WHEN SALARY >= 5000000 THEN '고급 개발자'
+     WHEN SALARY >= 3500000 THEN '중급 개발자'
      ELSE '초급 개발자'
     END AS "레벨"
 FROM EMPLOYEE;

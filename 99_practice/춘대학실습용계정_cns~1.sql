@@ -220,3 +220,58 @@ WHERE DEPARTMENT_NO = 'D005';
 --5 2004년2학기에 'C3118100' 과목을 수강한 학생들의 학점을 조회하려고 한다.
 -- 학점이 높은 학생부터 표시하고, 학점이 같으면 학번이 낮은 학생부터 표시하는 구문을 작성해보시오.
 
+
+
+
+
+
+
+-- 10. 춘 기술대학교 학생들의 정보만이 포함되어 있는 학생일반정보 VIEW를 만들고자 핚만다. 아래 내용을 참고하여 적젃핚 SQL 문을 작성하시오.
+GRANT CREATE VIEW TO CNS;
+
+CREATE OR REPLACE VIEW VW_학생일반정보
+AS SELECT STUDENT_NO, STUDENT_NAME, STUDENT_ADDRESS
+    FROM TB_STUDENT;
+
+SELECT * FROM VW_학생일반정보;
+
+
+--11. 춘 기술대학교는 1년에 두 번씩 학과별로 학생과 지도교수가 지도 면담을 진행한다. 
+-- 이를 위해 사용한 학생이름, 학과이름, 담당교수이름 으로 구성되어 있는 VIEW 를 만드시오. 
+-- 이때 지도 교수가 없는 학생이 있을 수 있음을 고려하시오 (단, 이 VIEW 는 단순 SELECT 
+-- 만을 할 경우 학과별로 정렬되어 화면에 보여지게 만드시오.) 
+CREATE OR REPLACE VIEW VW_지도면담
+AS SELECT STUDENT_NAME, DEPARTMENT_NAME, PROFESSOR_NAME
+FROM TB_STUDENT S
+JOIN TB_DEPARTMENT D ON (S.DEPARTMENT_NO =D.DEPARTMENT_NO)
+LEFT JOIN TB_PROFESSOR P ON (COACH_PROFESSOR_NO= PROFESSOR_NO);
+
+SELECT * FROM VW_지도면담;
+
+-- 12. 모든 학과의 학과별 학생 수를 확인핛 수 있도록 적절한 VIEW 를 작성해 보자.
+CREATE OR REPLACE VIEW VW_학과별학생수
+AS SELECT DEPARTMENT_NAME, COUNT(STUDENT_NO) AS "STUDENT_COUNT"
+FROM TB_DEPARTMENT
+LEFT JOIN TB_STUDENT USING (DEPARTMENT_NO)
+GROUP BY DEPARTMENT_NAME;
+
+SELECT * FROM VW_학과별학생수;
+
+-- 13. 위에서 생성한 학생일반정보 View를 통해서 학번이 A213046인 학생의 이름을 본인 이름으로 변경하는 SQL 문을 작성하시오. 
+UPDATE VW_학생일반정보
+SET STUDENT_NAME ='백가영'
+WHERE STUDENT_NO = 'A213046';
+
+-- 14. 13 번에서와 같이 VIEW를 통해서 데이터가 변경될 수 있는 상황을 막으려면 VIEW를 어떻게 생성해야 하는지 작성하시오.
+CREATE OR REPLACE VIEW VW_학생일반정보
+AS SELECT STUDENT_NO, STUDENT_NAME, STUDENT_ADDRESS
+    FROM TB_STUDENT
+WITH READ ONLY; -- 추가
+
+-- 15. 춘 기술대학교는 매년 수강신청 기간만 되면 특정 인기 과목들에 수강 신청이 몰려 문제가 되고 있다. 
+-- 최근 3년을 기준으로 수강인원이 가장 많았던 3 과목을 찾는 구문을  작성해보시오.
+
+SELECT CLASS_NO AS "과목번호", CLASS_NAME AS "과목이름", SUM()AS "누적수강생수(명)"
+FROM (
+
+);

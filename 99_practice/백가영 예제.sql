@@ -1,0 +1,26 @@
+-- 문제 1
+-- 가입일이 2021년인 사람들이 구매한 물품별 금액의 총 합을 구하시오. (총합은 내림차순으로 정렬한다.)
+
+SELECT PCODE , SUM( PRICE * QUANTITY)
+FROM TBL_CUSTOM
+JOIN TBL_BUY ON (CUSTOMID = CUSTOM_ID)
+JOIN TBL_PRODUCT USING(PCODE)
+WHERE TO_CHAR(REG_DATE,'YYYY') ='2021' 
+GROUP BY PCODE
+ORDER BY 2 DESC
+;
+
+-- 문제 2
+-- 하루에 물품을 3개 이상 구매한 내역이 있는 사람들의 평균 나이를 구하시오 (서브쿼리를 이용한다.)
+
+SELECT AVG(AGE)
+FROM TBL_CUSTOM
+WHERE CUSTOM_ID IN (
+    SELECT DISTINCT CUSTOM_ID
+    FROM TBL_CUSTOM
+    JOIN TBL_BUY ON (CUSTOMID = CUSTOM_ID)
+    WHERE QUANTITY >= 3
+);
+
+
+

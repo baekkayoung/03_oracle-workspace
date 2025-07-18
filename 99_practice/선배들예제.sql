@@ -115,7 +115,7 @@ HAVING COUNT(*) >= 1;
 
 */
 --B-5. 고객별-상품별 구매금액을 조회하세요. 정렬도 고객ID,상품코드 오름차순으로 정렬하세요.(이예진)
-SELECT CUSTOMID, PCODE, SUM(PRICE)
+SELECT CUSTOMID, PCODE, SUM(QUANTITY*PRICE)
 FROM TBL_BUY
 JOIN TBL_PRODUCT USING(PCODE)
 GROUP BY CUSTOMID,PCODE
@@ -171,23 +171,14 @@ GROUP BY CUSTOMID
 ORDER BY 2 DESC ;
 
  
---D-2. 판매 갯수가 가장 많은 순서로 상품 을 정렬하고 총 팔린 금액을 출력하시오.
+--D-2. 판매 갯수가 가장 많은 순서로 상품을 정렬하고 총 팔린 금액을 출력하시오.
 -- 	   판매 개수가 같으면 상품 코드 순서로 정렬합니다.			ㄴ 동등 조인으로 조회
 
-SELECT PCODE, SUM(PRICE*QUANTITY), QUANTITY
+SELECT PCODE, SUM(QUANTITY), SUM(PRICE*QUANTITY)
 FROM TBL_PRODUCT
 JOIN TBL_BUY USING(PCODE)
-GROUP BY PNAME, PCODE, QUANTITY
-ORDER BY 3;-------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
+GROUP BY PCODE
+ORDER BY 2 DESC;
 
 
 --D-3. 진라면을 구매한 고객들의 평균 나이를 제품코드(PCODE)와 함께출력해 주세요.(황병훈)
@@ -200,10 +191,14 @@ GROUP BY PCODE;
 
 --D-4. 30세 미만 회원별 구매금액을 구하고 회원으로 그룹바이해서 구매금액 합계가 큰 순으로 정렬(조지수)
 -- 						ㄴ 3개의 테이블 조인
-SELECT NAME, SUM(PRICE)
+SELECT NAME, SUM(PRICE*QUANTITY)
 FROM TBL_PRODUCT
 JOIN TBL_BUY USING(PCODE)
 JOIN TBL_CUSTOM ON (CUSTOMID=CUSTOM_ID)
 WHERE AGE <30
 GROUP BY CUSTOM_ID, NAME
 ORDER BY 2 DESC;
+
+
+
+

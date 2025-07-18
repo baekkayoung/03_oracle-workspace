@@ -32,8 +32,8 @@ SELECT DEPARTMENT_NAME, CATEGORY
 FROM TB_DEPARTMENT
 WHERE CAPACITY BETWEEN 20 AND 30;
 
---6. 춘 기술대학교는 총장을 제외하고 모든 교수들이 소속 학과를 가지고 있다.  그럼 춘 
--- 기술대학교 총장의 이름을 알아낼 수 있는 SQL 문장을 작성하시오.
+--6. 춘 기술대학교는 총장을 제외하고 모든 교수들이 소속 학과를 가지고 있다.  
+-- 그럼 춘 기술대학교 총장의 이름을 알아낼 수 있는 SQL 문장을 작성하시오.
 SELECT PROFESSOR_NAME
 FROM TB_PROFESSOR
 WHERE DEPARTMENT_NO IS NULL;
@@ -43,6 +43,7 @@ WHERE DEPARTMENT_NO IS NULL;
 SELECT STUDENT_NAME
 FROM TB_STUDENT
 WHERE DEPARTMENT_NO IS NULL;
+
 
 -- 8. 수강신청을 하려고 한다. 선수과목 여부를 확인해야 하는데, 선수과목이 존재하는 
 -- 과목들은 어떤 과목인지 과목번호를 조회해보시오.
@@ -59,6 +60,14 @@ FROM TB_DEPARTMENT;
 SELECT STUDENT_NO, STUDENT_NAME, STUDENT_SSN
 FROM TB_STUDENT
 WHERE STUDENT_NO LIKE 'A2%' AND ABSENCE_YN = 'N' AND STUDENT_ADDRESS LIKE '%전주%';
+
+
+
+
+
+
+
+
 
 
 --1. 영어영문학과(학과코드 002) 학생들의 학번과 이름, 입학 년도를 입학 년도가 빠른 
@@ -186,6 +195,20 @@ SELECT NVL(SUBSTR(TERM_NO,1,4),' ') AS "년도" , NVL(SUBSTR(TERM_NO,5,2),' ')AS "
 FROM TB_GRADE
 WHERE STUDENT_NO = 'A112113'
 GROUP BY ROLLUP(SUBSTR(TERM_NO,1,4), SUBSTR(TERM_NO,5,2));
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
 -- 1. 학생이름과 주소지를 표시하시오. 
 -- 단, 출력 헤더는 "학생 이름", "주소지"로 하고, 정렬은 이름으로 오름차순 표시하도록 한다.
@@ -212,19 +235,47 @@ ORDER BY 1;
 
 -- 4. 현재 법학과 교수 중 가장 나이가 많은 사람부터 이름을 확인할 수 있는 SQL 문장을 작성하시오
 -- (법학과의 '학과코드'는 학과 테이블(TB_DEPARTMENT)을 조회해서 찾아내도록 하자) 
-SELECT STUDENT_NO, POINT
-FROM TB_GRADE 
-WHERE DEPARTMENT_NO = 'D005';
+SELECT P.PROFESSOR_NAME, P.PROFESSOR_SSN
+FROM TB_PROFESSOR P 
+JOIN TB_DEPARTMENT D USING (DEPARTMENT_NO)
+WHERE P.DEPARTMENT_NAME = '법학과'
+ORDER BY SUBSTR(P.PROFESSOR_SSN, 1, 6) DESC
+;------------------------------------------------------------------------------------------------------------
 
 
 --5 2004년2학기에 'C3118100' 과목을 수강한 학생들의 학점을 조회하려고 한다.
 -- 학점이 높은 학생부터 표시하고, 학점이 같으면 학번이 낮은 학생부터 표시하는 구문을 작성해보시오.
+SELECT STUDENT_NO, POINT
+FROM TB_CLASS
+JOIN TB_GRADE USING(CLASS_NO)
+WHERE CLASS_NO = 'C3118100'
+ORDER BY POINT DESC, STUDENT_NO ASC;
+
+--6. 학생 번호, 학생 이름, 학과 이름을 학생 이름으로 오름차순 정렬하여 출력하는 SQL 문을 작성하시오. 
+SELECT STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME
+FROM TB_STUDENT
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+ORDER BY STUDENT_NAME ASC;
 
 
+--7. 춘 기술대학교의 과목 이름과 과목의 학과 이름을 출력하는 SQL 문장을 작성하시오.
+SELECT CLASS_NAME, DEPARTMENT_NAME
+FROM TB_CLASS
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO);
 
 
+--8. 과목별 교수 이름을 찾으려고 한다. 과목 이름과 교수 이름을 출력하는 SQL 문을 작성하시오.
+SELECT CLASS_NAME, PROFESSOR_NAME
+FROM TB_CLASS
+JOIN TB_PROFESSOR USING(DEPARTMENT_NO)
+JOIN TB_CLASS_PROFESSOR USING(PROFESSOR_NO);
 
+SELECT CLASS_NAME, PROFESSOR_NAME
+FROM TB_CLASS
+JOIN TB_CLASS_PROFESSOR USING(CLASS_NO)
+JOIN TB_PROFESSOR USING(PROFESSOR_NO);
 
+--9. 8번의 결과 중 ‘인문사회’ 계열에 속핚 과목의 교수 이름을 찾으려고 핚다. 이에 해당하는 과목 이름과 교수 이름을 출력하는 SQL 문을 작성하시오.
 
 -- 10. 춘 기술대학교 학생들의 정보만이 포함되어 있는 학생일반정보 VIEW를 만들고자 핚만다. 아래 내용을 참고하여 적젃핚 SQL 문을 작성하시오.
 GRANT CREATE VIEW TO CNS;
@@ -275,3 +326,61 @@ SELECT CLASS_NO AS "과목번호", CLASS_NAME AS "과목이름", SUM()AS "누적수강생수(�
 FROM (
 
 );
+-- 16. 홖경조경학과 젂공과목들의 과목 별 평점을 파악핛 수 있는 SQL 문을 작성하시오.
+
+-- 17. 춘 기술대학교에 다니고 있는 최경희 학생과 같은 과 학생들의 이름과 주소를 출력하는 SQL 문을 작성하시오.
+
+-- 18. 국어국문학과에서 총 평점이 가장 높은 학생의 이름과 학번을 표시하는 SQL문을  작성하시오.
+
+--19. 춘 기술대학교의 "홖경조경학과"가 속핚 같은 계열 학과들의 학과 별 젂공과목 평점을 
+--파악하기 위핚 적젃핚 SQL 문을 찾아내시오. 단, 출력헤더는 "계열 학과명", 
+--"젂공평점"으로 표시되도록 하고, 평점은 소수점 핚 자리까지맊 반올림하여 표시되도록 
+--핚다.
+
+
+-- DDL 
+
+-- 1. 계열 정보를 저장핛 카테고리 테이블을 맊들려고 핚다. 다음과 같은 테이블을  작성하시오.
+
+-- 2. 과목 구분을 저장핛 테이블을 맊들려고 핚다. 다음과 같은 테이블을 작성하시오.
+
+-- 3. TB_CATAGORY 테이블의 NAME 컬럼에 PRIMARY KEY를 생성하시오. 
+-- (KEY 이름을 생성하지 않아도 무방함. 맊일 KEY 이를 지정하고자 핚다면 이름은 본인이 
+-- 알아서 적당핚 이름을 사용핚다.)
+
+-- 4. TB_CLASS_TYPE 테이블의 NAME 컬럼에 NULL 값이 들어가지 않도록 속성을 변경하시오. 
+
+--5. 두 테이블에서 컬럼 명이 NO인 것은 기존 타입을 유지하면서 크기는 10 으로, 컬럼명이 
+--NAME 인 것은 마찪가지로 기존 타입을 유지하면서 크기 20 으로 변경하시오. 
+--6. 두 테이블의 NO 컬럼과 NAME 컬럼의 이름을 각 각 TB_ 를 제외핚 테이블 이름이 앞에 
+--붙은 형태로 변경핚다.
+
+-- 7. TB_CATAGORY 테이블과 TB_CLASS_TYPE 테이블의 PRIMARY KEY 이름을 다음과 같이 변경하시오. 
+
+-- 8. 다음과 같은INSERT 문을 수행핚다
+
+
+-- 9.TB_DEPARTMENT 의 CATEGORY 컬럼이 TB_CATEGORY 테이블의 CATEGORY_NAME 컬럼을 부모 
+-- 값으로 참조하도록 FOREIGN KEY를 지정하시오. 이 때 KEY 이름은 
+-- FK_테이블이름_컬럼이름으로 지정핚다. (ex. FK_DEPARTMENT_CATEGORY )
+
+-- 10. 춘 기술대학교 학생들의 정보맊이 포함되어 있는 학생일반정보 VIEW를 맊들고자 핚다. 
+-- 아래 내용을 참고하여 적젃핚 SQL 문을 작성하시오.
+
+-- 11. 춘 기술대학교는 1년에 두 번씩 학과별로 학생과 지도교수가 지도 면담을 진행핚다. 
+--이를 위해 사용핛 학생이름, 학과이름, 담당교수이름 으로 구성되어 있는 VIEW 를 맊드시오. 
+--이때 지도 교수가 없는 학생이 있을 수 있음을 고려하시오 (단, 이 VIEW 는 단순 SELECT 
+--맊을 핛 경우 학과별로 정렬되어 화면에 보여지게 맊드시오.)  
+
+-- 12. 모든 학과의 학과별 학생 수를 확인핛 수 있도록 적젃핚 VIEW 를 작성해 보자.
+
+-- 13. 위에서 생성핚 학생일반정보 View를 통해서 학번이 A213046인 학생의 이름을 본인 이름으로 변경하는 SQL 문을 작성하시오.
+
+-- 14. 13 번에서와 같이 VIEW를 통해서 데이터가 변경될 수 있는 상황을 막으려면 VIEW를 어떻게 생성해야 하는지 작성하시오.
+
+--15. 춘 기술대학교는 매년 수강신청 기갂맊 되면 특정 인기 과목들에 수강 신청이 몰려 
+--문제가 되고 있다. 최근 3년을 기준으로 수강인원이 가장 맋았던 3 과목을 찾는 구문을 
+--작성해보시오.
+
+-- DML
+

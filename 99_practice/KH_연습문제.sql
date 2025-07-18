@@ -93,10 +93,14 @@ WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM HIRE_DATE) > 20;
 SELECT EMP_NAME, TO_CHAR(SALARY, 'L9,999,999')
 FROM EMPLOYEE;
 
--- 21. EMPLOYEE 테이블에서 직원명, 부서코드, 생년월일, 나이(만) 조회 
+-- 21. EMPLOYEE 테이블에서 직원명, 부서코드, 
+-- 생년월일, 나이(만) 조회 
 -- (단, 생년월일은 주민번호에서 추출해서 00년 00월 00일로 출력되게 하며  
 -- 나이는 주민번호에서 출력해서 날짜데이터로 변환한 다음 계산) 
-SELECT EMP_NAME, DEPT_CODE, SUBSTR(EMP_NO,1,6)('YYYY-MM-DD')
+SELECT EMP_NAME
+       ,DEPT_CODE
+       ,TO_CHAR(TO_DATE(SUBSTR(EMP_NO, 1, 6),'RRMMDD'),'RR"년"MM"월"DD"일"') AS "생년월일"
+       ,FLOOR(MONTHS_BETWEEN(SYSDATE, TO_DATE(SUBSTR(EMP_NO, 1, 6),'RRMMDD'))/12) AS "나이(만)" 
 FROM EMPLOYEE;
 
 -- 22. EMPLOYEE테이블에서 부서코드가 D5, D6, D9인 사원만 조회하되 D5면 총무부, D6면 기획부, D9면 영업부로 처리 
@@ -120,11 +124,13 @@ SELECT SUM(SALARY+SALARY*BONUS)
 FROM EMPLOYEE
 WHERE DEPT_CODE ='D5';
 
--- 25. EMPLOYEE테이블에서 직원들의 입사일로부터 년도만 가지고 각 년도별 입사 인원수 조회 
--- 전체 직원 수, 2001년, 2002년, 2003년, 2004년 
-SELECT 
-FROM EMPLOYEE
-EXTRACT(YEAR FROM HIRE_DATE);
+-- 25. EMPLOYEE 테이블에서 직원들의 입사일로부터 년도만 가지고 각 년도별 입사 인원수 조회 
+-- 전체 직원 수, 2001년, 2002년, 2003년, 2004년 ------------------------------------------------------
 
-
+SELECT COUNT(EMP_ID) AS "전체 직원 수",
+       SUM(CASE WHEN EXTRACT(YEAR FROM HIRE_DATE) = 2001 THEN 1 ELSE 0 END) AS "2001년",
+       SUM(CASE WHEN EXTRACT(YEAR FROM HIRE_DATE) = 2002 THEN 1 ELSE 0 END) AS "2002년",
+       SUM(CASE WHEN EXTRACT(YEAR FROM HIRE_DATE) = 2003 THEN 1 ELSE 0 END) AS "2003년",
+       SUM(CASE WHEN EXTRACT(YEAR FROM HIRE_DATE) = 2004 THEN 1 ELSE 0 END) AS "2004년" 
+FROM EMPLOYEE;
 

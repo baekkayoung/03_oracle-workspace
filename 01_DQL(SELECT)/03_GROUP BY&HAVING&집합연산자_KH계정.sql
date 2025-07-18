@@ -26,6 +26,7 @@ ORDER BY DEPT_CODE; -- 안 써도 오름차순 NULL LAST 4
 SELECT JOB_CODE, COUNT(*), SUM(SALARY)
 FROM EMPLOYEE
 GROUP BY JOB_CODE;
+-- COUNT는 사람의 수를 센다. 직급별로 묶은 다음 잡코드별 사람수 나옴 왜냐하면 행을 세는 거기 때문에, 가로는 항목을 쭉 보는거고..
 
 -- 각 직급별 총 사원수, 보너스를 받는 사원수, 급여합, 평균급여, 최저급여, 최대급여
 SELECT JOB_CODE, COUNT(*) AS "총 사원수" , COUNT(BONUS) AS "보너스를 받는 사원수", 
@@ -73,17 +74,20 @@ HAVING AVG(SALARY) >= 3000000 --3
 ORDER BY 1; --5
 
 -- 직급별 총 급여합(단, 직급별 급여합이 1000만원 이상인 직급만을 조회)
-SELECT JOB_CODE, SUM(SALARY)
-FROM EMPLOYEE
-GROUP BY JOB_CODE
-HAVING SUM(SALARY) >= 10000000
-ORDER BY 1;
+SELECT JOB_CODE, SUM(SALARY) -- 4
+FROM EMPLOYEE -- 1 
+GROUP BY JOB_CODE -- 2 
+HAVING SUM(SALARY) >= 10000000 -- 3
+ORDER BY 1; -- 5
 
 -- 부서별로 보너스를 받는 사원이 없는 부서만을 조회 (부서코드, 보너스를 몇 명이 받는지)
-SELECT DEPT_CODE, COUNT(BONUS) -- * : X
+SELECT DEPT_CODE, COUNT(BONUS) 
 FROM EMPLOYEE
 GROUP BY DEPT_CODE
 HAVING COUNT(BONUS) = 0 ;
+-- COUNT(*) : X
+-- COUNT(*): 테이블의 모든 행을 세며, NULL 값을 포함한 행도 모두 계산합니다.
+-- COUNT(column): 지정한 컬럼의 값이 NULL이 아닌 행만 셉니다. 즉, NULL 값은 제외됩니다.
 
 --------------------------------------------------------------------------------
 
@@ -151,6 +155,7 @@ WHERE DEPT_CODE = 'D5' OR SALARY>3000000;
 
 --2 INTERSECT(교집합)
 -- 부서코드가 D5면서 급여까지도 300만원 초과인 사원 조회
+
 SELECT EMP_ID, EMP_NAME, DEPT_CODE, SALARY
 FROM EMPLOYEE
 WHERE DEPT_CODE = 'D5'
@@ -182,8 +187,6 @@ FROM EMPLOYEE
 WHERE SALARY > 3000000
 ORDER BY EMP_NAME;
 -- 컬럼 개수 뿐만 아니라 컬럼 자리마다 동일한 타입으로 기술해야됨
-
-
 
 
 -- ORDER BY 절을 붙이고나 한다면 마지막에 기술해야됨!

@@ -1,5 +1,5 @@
 /*
-    < 함수 FUNCIONT >
+    < 함수 FUNCTION >
     전달된 컬럼값을 읽어들여서 함수를 실행한 결과를 반환함
     
     - 단일행 함수 : N개의 값을 읽어들여서 N개의 결과값을 리턴
@@ -491,8 +491,6 @@ FROM EMPLOYEE;
 
 --3. MIN(여러타입) : 해당 컬럼값들 중에 가장 작은 값 구해서 반환
 SELECT MIN(EMP_NAME), MIN(SALARY), MIN(HIRE_DATE) -- 각각임!!
-
-
 FROM EMPLOYEE;
 
 --4. MAX(여러타입) : 해당 컬럼값들 중에 가장 큰 값 구해서 반환
@@ -524,7 +522,7 @@ WHERE DEPT_CODE IS NOT NULL;
 
 -- 현재 사원들이 총 몇 개의 부서에 분포되어있는지
 SELECT COUNT(DISTINCT DEPT_CODE)
-FROM EMPLOYEE
+FROM EMPLOYEE;
 
 
 

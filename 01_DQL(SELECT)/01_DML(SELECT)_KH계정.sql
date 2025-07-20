@@ -203,7 +203,7 @@ WHERE SALARY >= 3000000;
 --2. 연봉이 5000만원 이상인 사원들의 사원명, 급여, 연봉, 부서코드 조회
 SELECT EMP_NAME, SALARY, SALARY*12 AS "연봉", DEPT_CODE -- 3번
 FROM EMPLOYEE -- 1번
-WHERE SALARY*12>=50000000; -2 
+WHERE SALARY*12>=50000000; --2번
 
 -- WHERE 연봉 >= 50000000; 2번 (invalid identifier)옵티마이저의 실행 계획에 따라..
 -- WHERE 절에서는 SELECT절에서 작성한 별칭 사용 불가!
@@ -349,7 +349,7 @@ WHERE DEPT_ID = 'D5' OR DEPT_ID = 'D6' OR DEPT_ID ='D7';
 SELECT EMP_ID, EMP_NAME, SALARY, BONUS
 FROM EMPLOYEE
 --WHERE BONUS = NULL; 정상적으로 조회 안됨
-WHERE BONUS IS NULL; 
+WHERE BONUS IS NULL;
 
 -- 보너스를 받는 사원(BONUS 값이 NULL이 아닌)들의 사번, 이름, 급여, 보너스 조회
 SELECT EMP_ID, EMP_NAME, SALARY, BONUS
@@ -384,7 +384,7 @@ FROM EMPLOYEE
 WHERE DEPT_CODE IN ('D6','D8','D5');
 
 -- 그 외의 사원들
-SELECT EMP_NAME, DEPTE_CODE, SALARY
+SELECT EMP_NAME, DEPT_CODE, SALARY
 FROM EMPLOYEE
 WHERE DEPT_CODE NOT IN ('D6','D8','D5');
 
@@ -405,10 +405,10 @@ WHERE DEPT_CODE NOT IN ('D6','D8','D5');
 */
 
 -- ** OR 보다 AND가 먼저 연산됨
--- 직급코드가 J7 이거나 J2인 사원들중 급여가 200 만원 이상인 사람들의 모든 컬럼교회
+-- 직급코드가 J7 이거나 J2인 사원들중 급여가 200만원 이상인 사람들의 모든 컬럼교회
 SELECT *
 FROM EMPLOYEE
-WHERE (JOB_CODE = 'J7' OR  JOB_CODE = 'J2') AND SALARY >= 2000000;
+WHERE (JOB_CODE = 'J7' OR JOB_CODE = 'J2') AND SALARY >= 2000000;
 
 --------------------------------실습문제------------------------------
 
@@ -468,8 +468,9 @@ FROM EMPLOYEE
 --ORDER BY BONUS DESC; -- 내림차순 정렬일 때는 기본적으로 NULLS FIRST 구나!
 ORDER BY BONUS DESC, SALARY ASC; -- 정렬 기준 여러개 제시 가능(첫번째 기준의 컬럼값이 동일할 경우 두번쨰 기준 컬럼가지고 정렬)
 
+
 -- 전체 사원의 사원명, 연봉 조회 (이때 연봉별 내림차순 정렬조회)
-SELECT EMP_NAME, SALARY*12 AS "연봉"
+SELECT EMP_NAME, SALARY * 12 AS "연봉"
 FROM EMPLOYEE
 --ORDER BY SALARY*12 DESC;
 --ORDER BY 연봉 DESC; -- 실행순서에따라 별칭을 사용할 수 있다

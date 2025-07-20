@@ -304,7 +304,7 @@ SELECT TO_CHAR(SYSDATE) FROM DUAL;
 SELECT TO_CHAR(SYSDATE, 'PM HH:MI:SS') FROM DUAL; -- HH : 12시간 형식
 SELECT TO_CHAR(SYSDATE, 'HH24:MI:SS') FROM DUAL; -- HH : 24시간 형식
 SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD') FROM DUAL; -- 2025-07-11
-SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD DAY DY') FROM DUAL;
+SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD DAY DY') FROM DUAL;  -- 2025-07-11 금
 
 SELECT EMP_NAME, HIRE_DATE, TO_CHAR(HIRE_DATE, 'YYYY-MM-DD')
 FROM EMPLOYEE;
@@ -337,10 +337,10 @@ SELECT TO_CHAR(SYSDATE, 'DDD'), -- 올해 기준으로 오늘이 며칠 째 인지
        TO_CHAR(SYSDATE, 'D') -- 주를 기준으로 오늘이 며칠째인지 (6-금)
 FROM DUAL;
 
--- 요일에 대한 포맷
-SELECT TO_CHAR(SYSDATE, 'DAY'), --금요일
-       TO_CHAR(SYSDATE, 'DY') --금
-FROM DUAL;
+    -- 요일에 대한 포맷
+    SELECT TO_CHAR(SYSDATE, 'DAY'), --금요일
+           TO_CHAR(SYSDATE, 'DY') --금
+    FROM DUAL;
 
 --------------------------------------------------------------------------------
 
@@ -357,6 +357,8 @@ SELECT TO_DATE(100101) FROM DUAL;
 SELECT TO_DATE('070101') FROM DUAL; -- 첫글자가 0인 경우에는 무조건 문자 타입으로 변경해야함
 
 SELECT TO_DATE('041030 143000', 'YYMMDD HH24MISS') FROM DUAL;
+SELECT TO_CHAR(TO_DATE('041030 143000', 'YYMMDD HH24MISS'), 'YYYY-MM-DD HH24:MI:SS')
+FROM DUAL;
 
 SELECT TO_DATE('140630','YYMMDD') FROM DUAL; --2014
 SELECT TO_DATE('980630','YYMMDD') FROM DUAL; -- 2098 => 무조건 현재 세기로 반영!
@@ -442,7 +444,7 @@ FROM EMPLOYEE;
 
 -- 사원명, 직급코드, 기존급여, 인상된급여
 SELECT EMP_NAME, JOB_CODE, SALARY,
-     DECODE(JOB_CODE,'J7',SALARY*1.1,
+     DECODE(JOB_CODE,'J7',SALARY *1.1,
                     'J6', SALARY *1.15,
                     'J5', SALARY *1.2,
                     SALARY * 1.05) AS "인상된 급여"

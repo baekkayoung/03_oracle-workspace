@@ -225,7 +225,7 @@ RIGHT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID);
 -->> 오라클 전용 구문
 SELECT EMP_NAME, DEPT_TITLE, SALARY, SALARY*12
 FROM EMPLOYEE, DEPARTMENT
-WHERE DEPT_CODE(+) = DEPT_ID;
+WHERE DEPT_CODE = DEPT_ID;
 
 -- 3) FULL [OUTER] JOIN : 두 테이블을 가진 모든 행을 조회할 수 있음 (단, 오라클 전용 구문으로는 안 됨)
 -->>ANSI 구문
@@ -312,7 +312,7 @@ AND L.NATIONAL_CODE = N.NATIONAL_CODE;
     FROM EMPLOYEE E
     JOIN DEPARTMENT D ON (E.DEPT_CODE = D.DEPT_ID)
     JOIN LOCATION L ON (D.LOCATION_ID = L.LOCAL_CODE)
-    JOIN NATIONAL N USING(NATIONAL_CODE); --------------------------------------------
+    JOIN NATIONAL N USING(NATIONAL_CODE); 
 
 
 --2. 사번, 사원명, 부서명, 직급명, 지역명, 국가명, 해당 급여 등급에서 받을 수 있는 최대 금액 조회 (SAL_GRADE)(모든 테이블 조회)

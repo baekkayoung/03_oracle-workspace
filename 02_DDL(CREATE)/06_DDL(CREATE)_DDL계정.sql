@@ -3,7 +3,8 @@
 
 /*
     * DDL (DATA DEFINITION LANGUAGE) : 데이터 정의 언어
-    오라클에서 제공하는 객체(OBJECT)를 새로이 만들고(CREATE), 구조를 변경(ALTER)하고, 구조를 삭제하는(DROP) 언어
+    오라클에서 제공하는 객체(OBJECT)를 새로이 만들고(CREATE), 
+    구조를 변경(ALTER)하고, 구조를 삭제하는(DROP) 언어
     즉, 실제데이터 값이 아닌 구조 자체를 정의하는 언어
     주로 DB관리자, 설계자가 사용함
     
@@ -151,7 +152,7 @@ DROP TABLE MEM_UNIQUE;
 --               제약조건(컬럼명)
 CREATE TABLE MEM_UNIQUE(
     MEM_NO NUMBER CONSTRAINT MEMNO_NN NOT NULL,
-    MEM_ID VARCHAR2(20) CONSTRAINT MEMID_NN NOT NULL, -- 컬럼 레베래
+    MEM_ID VARCHAR2(20) CONSTRAINT MEMID_NN NOT NULL, -- 컬럼 레벨
     MEM_PWD VARCHAR2(20) CONSTRAINT MEMPWD_NN NOT NULL,
     MEM_NAME VARCHAR(20)  CONSTRAINT MEMNAME_NN NOT NULL,
     GENDER CHAR(3),

@@ -45,6 +45,7 @@ WHERE SALARY>=(SELECT AVG(SALARY)
 
 --------------------------------------------------------------------------------
 
+
 /*
     *서브쿼리의 구분
     서브쿼리를 수행한 결과값이 몇 행 몇 열 이냐에 따라서 분류됨
@@ -209,7 +210,7 @@ WHERE JOB_CODE IN (SELECT JOB_CODE
  WHERE JOB_NAME ='대리'
  AND SALARY > ANY (SELECT SALARY
                  FROM EMPLOYEE E, JOB J
-                 WHERE E.JOB_CODE = J.JOB_CODE
+                 WHERE E.JOB_CODE = J.JOB_CODE -- 값 3개
                  AND JOB_NAME ='과장');
 
 --단일행 서브쿼리로 가능!
@@ -219,7 +220,7 @@ WHERE JOB_CODE IN (SELECT JOB_CODE
  WHERE JOB_NAME ='대리'
  AND SALARY > (SELECT MIN(SALARY)
                  FROM EMPLOYEE E, JOB J
-                 WHERE E.JOB_CODE = J.JOB_CODE
+                 WHERE E.JOB_CODE = J.JOB_CODE -- 값 1개
                  AND JOB_NAME ='과장');
                  
 -- 3) 과장 직급임에도 불구하고 차장직인 사원들의 모든 금여보다도 더 많이 받는 사원들의 사변, 지원명, 직급명, 급여
@@ -288,8 +289,8 @@ GROUP BY JOB_CODE;
 -- 1-2)
 SELECT EMP_ID, EMP_NAME, JOB_CODE, SALARY
 FROM EMPLOYEE
-WHERE JOB_CODE = 'J2' AND SALARY = 3700000
-OR JOB_CODE ='J7' AND SALARY = 1380000;
+WHERE JOB_CODE = 'J2' AND SALARY = 3700000 -- 잡코드가 J2이면서 370만원인 사람
+OR JOB_CODE ='J7' AND SALARY = 1380000; -- 잡코드가 J7이면서 138만원인 사람
 
 SELECT EMP_ID, EMP_NAME, JOB_CODE, SALARY
 FROM EMPLOYEE
@@ -333,7 +334,7 @@ WHERE 연봉 >= 30000000;
 
 --> 전 직원 중 급여가 가장 높은 상위 5명만 조회
 -- *ROWNUM : 오라클에서 제공해주는 컬럼, 조회된 순서대로 1번부터 순번을 부여해주는 컬럼
-SELECT ROWNUM, EMP_NAME, SALARY --2 (이때 순서가 이미 부여됨. 정렬도 하기전에 이미 순서 부여)
+SELECT ROWNUM, EMP_NAME, SALARY --2 (이때 ROWNUM으로 순서가 이미 부여됨. 정렬도 하기전에 이미 순서 부여)
 FROM EMPLOYEE --1
 WHERE ROWNUM <=5
 ORDER BY SALARY DESC; --3
@@ -411,8 +412,8 @@ FROM EMPLOYEE;
 
 SELECT EMP_NAME, SALARY, RANK() OVER(ORDER BY SALARY DESC) AS "순위" 
 FROM EMPLOYEE;
--- WHERE RANK() OVER(ORDER BY SALARY DESC) <=5; -- window functions are not allowed here
--- WHERE 순위 <=5;
+--WHERE RANK() OVER(ORDER BY SALARY DESC) <=5; -- window functions are not allowed here
+--WHERE 순위 <=5;
 
 -- 인라인 뷰를 쓸 수밖에 없음!
 SELECT *

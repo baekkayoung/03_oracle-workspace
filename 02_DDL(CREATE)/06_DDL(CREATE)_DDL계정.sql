@@ -254,7 +254,7 @@ CREATE TABLE MEM_PRI(
     GENDER CHAR(3) CHECK(GENDER IN ('남','여')),
     PHONE VARCHAR2(13),
     EMAIL VARCHAR2(50)
-    -- CONSTRAINT PRIMARY KEY(MEM_NO) -- 테이블 레벨 방식
+    -- CONSTRAINT MEMNO_PK PRIMARY KEY(MEM_NO) -- 테이블 레벨 방식
 );
 
 SELECT *  FROM MEM_PRI;
@@ -298,7 +298,7 @@ CREATE TABLE MEM_PRI2(
     PHONE VARCHAR2(13),
     EMAIL VARCHAR2(50),
     PRIMARY KEY(MEM_NO, MEM_ID) -- 묶어서 PRIMARY KEY 제약조건 부여! (복합키)
- );
+ ); -- 둘중 하나만 같아도 허용
  
  SELECT * FROM MEM_PRI2;
  
@@ -445,7 +445,7 @@ ROLLBACK;
     자식 테이블 생성시 외래키 제약조건 부여할 때 삭제옵션 지정 가능
     * 삭제옵션: 부모테이블의 데이터 삭제시 그 데이터를 사용하고 있는 자식테이블의 값을 어떻게 처리할건지?
     
-    - ON DELETE RESTRLCTED(기본값) : 삭제 제한 옵션, 자식데이터로 쓰이는 부모데이터는 아예 삭제 안되게끔
+    - ON DELETE RESTRICT(기본값) : 삭제 제한 옵션, 자식데이터로 쓰이는 부모데이터는 아예 삭제 안되게끔
     - ON DELETE SET NULL : 부모데이터를 삭제시 해당 데이터를 쓰고 있는 자식 데이터의 값을 NULL로 변경
     - ON DELETE CASCADE : 부모데이터 삭제시 해당 데이터를 쓰고 있는 자식 데이터도 같이 삭제 시킴
     
